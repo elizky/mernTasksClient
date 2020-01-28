@@ -89,6 +89,12 @@ a {
 }
 
 @media (min-width: 768px) {
+  .alerta{
+    width: auto;
+    top: 30px;
+    right: 10px;
+    left: auto;
+  }
   .contenedor-app {
       display: flex;
       min-height: 100vh;
@@ -325,4 +331,14 @@ aside  {
   margin-top: 2rem;
   display: block;
   opacity: .7;
+}
+
+.alerta-ok{
+  background-color: rgb(109,211,109);
+  color: rgb(2, 103, 2);
+}
+
+.alerta-error{
+  background-color: rgb(230,78,78);
+  color: var(--blanco);
 }

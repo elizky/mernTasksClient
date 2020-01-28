@@ -1,7 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
+import AlertaContext from "../../context/alertas/alertaContext";
+import AuthContext from "../../context/autenticacion/authContext";
 
-const Login = () => {
+const Login = props => {
+  //Extraer valores del context
+  const alertaContext = useContext(AlertaContext);
+  const { alerta, mostrarAlerta } = alertaContext;
+
+  const authContext = useContext(AuthContext);
+  const { mensaje, autenticado, iniciarSesion } = authContext;
+
+  //En caso de que pass o usuario no exista
+  useEffect(() => {
+    if (autenticado) {
+      props.history.push("/proyectos"); //envia a proyectos si esta todo ok
+    }
+    if (mensaje) {
+      mostrarAlerta(mensaje.msg, mensaje.categoria);
+    }
+    //eslint-disable-next-line
+  }, [mensaje, autenticado, props.history]);
+
   //state para login
   const [usuario, guardarUsuario] = useState({
     email: "",
@@ -21,15 +41,22 @@ const Login = () => {
   const onSubmit = e => {
     e.preventDefault();
     //validar que no haya campos vacios
+    if (email.trim() === "" || password.trim() === "") {
+      mostrarAlerta("Todos los campos son obligatorios", "alerta-error");
+    }
+    iniciarSesion({ email, password });
   };
 
   return (
     <div className="form-usuario">
+      {alerta ? (
+        <div className={`alerta ${alerta.categoria}`}>{alerta.msg}</div>
+      ) : null}
       <div className="contenedor-form sombra dark">
         <h1>Iniciar Sesión</h1>
         <form onSubmit={onSubmit}>
           <div className="campo-form">
-            <label htmlfor="email">Email</label>
+            <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
@@ -40,7 +67,7 @@ const Login = () => {
             />
           </div>
           <div className="campo-form">
-            <label htmlfor="password">Password</label>
+            <label htmlFor="password">Password</label>
             <input
               type="password"
               id="password"
